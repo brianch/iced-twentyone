@@ -175,13 +175,20 @@ impl Application for IcedTwentyOne {
             dealer_info,
             game_result,
             player_info,
-        ].align_items(iced::Alignment::Center).spacing(10);
+        ].align_items(iced::Alignment::Center).spacing(10).padding(30);
 
-        container(table_col)
+        let menu_col = col![
+            container(
+                button(text("Restart")),
+            ).height(Length::Fill).center_y().width(Length::Fill).center_x()
+        ].align_items(iced::Alignment::Center).spacing(10).width(Length::Fixed(120.));
+
+        let row_ui = row![menu_col, table_col];
+
+        container(row_ui)
             .width(Length::Fill)
             .height(Length::Fill)
             .center_y()
-            .padding(40)
             .into()
     }
 
