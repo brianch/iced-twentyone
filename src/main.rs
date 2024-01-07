@@ -101,6 +101,20 @@ impl Application for IcedTwentyOne {
             .padding(40)
             .into()
     }
+
+    fn theme(&self) -> Self::Theme {
+        Theme::Custom(Box::new(
+            iced::theme::Custom::new(
+                iced::theme::Palette {
+                    background: color!(0x114411),
+                    text: color!(0xCCFFCC),
+                    primary: color!(0xffffff),
+                    success: color!(0xffffff),
+                    danger: color!(0xCC0000),
+                }
+            )
+        ))
+    }
 }
 
 pub fn main() -> iced::Result {
