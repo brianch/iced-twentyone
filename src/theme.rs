@@ -4,14 +4,16 @@ use iced::{application, Color};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TwentyOneTheme {
-    #[default]
     Green,
+    #[default]
+    Burgundy
 }
 
 impl TwentyOneTheme {
     pub fn palette(&self) -> TwentyOnePalette {
         match self {
             TwentyOneTheme::Green => TwentyOnePalette::GREEN,
+            TwentyOneTheme::Burgundy => TwentyOnePalette::BURGUNDY,
         }
     }
 }
@@ -145,6 +147,21 @@ impl TwentyOnePalette {
             0x32 as f32 / 255.0,
             0x47 as f32 / 255.0,
             0x31 as f32 / 255.0,
+        ),
+        tertiary: Color::WHITE,
+        text_dark: Color::BLACK,
+        text_light: Color::WHITE,
+    };
+    pub const BURGUNDY: Self = Self {
+        primary: Color::from_rgb(
+            0x99 as f32 / 255.0,
+            0x62 as f32 / 255.0,
+            0x6b as f32 / 255.0,
+        ),
+        secondary: Color::from_rgb(
+            0x4b as f32 / 255.0,
+            0x30 as f32 / 255.0,
+            0x34 as f32 / 255.0,
         ),
         tertiary: Color::WHITE,
         text_dark: Color::BLACK,
