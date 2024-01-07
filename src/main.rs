@@ -108,6 +108,17 @@ impl Application for IcedTwentyOne {
                 button(text("Start Game")).on_press(Message::Start),
             ].width(Length::Fill).align_items(iced::Alignment::Center).spacing(20)
         } else {
+            let btn_row = if self.game_stage == GameStage::Dealing {
+                row![
+                    button(text("Deal another card")).on_press(Message::DealCard),
+                    button(text("Stand")).on_press(Message::Stand),
+                ].spacing(30)
+            } else {
+                row![
+                    button(text("Deal another card")),
+                    button(text("Stand")),
+                ].spacing(30)
+            };
             let mut player_row = Row::new().spacing(10);
             for card in &self.player_hand.cards {
                 player_row = player_row.push(image(String::from("img/") + &card.get_id() + ".png").height(Length::Fixed(200.)));
@@ -116,10 +127,7 @@ impl Application for IcedTwentyOne {
                 Rule::horizontal(4.),
                 text(self.player_hand.value().to_string()).size(35),
                 player_row,
-                row![
-                    button(text("Deal another card")).on_press(Message::DealCard),
-                    button(text("Stand")).on_press(Message::Stand),
-                ].spacing(30),
+                btn_row,
             ].width(Length::Fill).align_items(iced::Alignment::Center).spacing(20)
         };
         let player_info = container(player_info_col).height(Length::Fill).align_y(Vertical::Bottom);
