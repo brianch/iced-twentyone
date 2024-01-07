@@ -48,6 +48,7 @@ enum Message {
     DealCard,
     Stand,
     DealerDraw(Instant),
+    Restart,
 }
 
 impl Application for IcedTwentyOne {
@@ -101,6 +102,16 @@ impl Application for IcedTwentyOne {
                 } else if self.dealer_hand.value() == self.player_hand.value()  {
                     self.game_stage = GameStage::Tie;
                 }
+            } Message::Restart => {
+                self.deck = Deck::new();
+                self.deck.shuffle();
+                self.player_hand = Hand::new();
+                self.dealer_hand = Hand::new();
+                self.player_hand.push(self.deck.deal_card().unwrap());
+                self.player_hand.push(self.deck.deal_card().unwrap());
+                self.dealer_hand.push(self.deck.deal_card().unwrap());
+                self.dealer_hand.push(self.deck.deal_card().unwrap());
+                self.game_stage = GameStage::Init;
             }
         }
         Command::none()
@@ -179,7 +190,7 @@ impl Application for IcedTwentyOne {
 
         let menu_col = col![
             container(
-                button(text("Restart")),
+                button(text("Restart")).on_press(Message::Restart),
             ).height(Length::Fill).center_y().width(Length::Fill).center_x()
         ].align_items(iced::Alignment::Center).spacing(10).width(Length::Fixed(120.));
 
