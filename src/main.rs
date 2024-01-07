@@ -1,5 +1,6 @@
 use iced::widget::{container, image};
-use iced::executor;
+use iced::{executor, Length};
+use iced::alignment::Vertical;
 use iced::{Application, Element, Settings, Theme, Command};
 
 mod card;
@@ -47,7 +48,14 @@ impl Application for IcedTwentyOne {
 
     fn view(&self) -> Element<Self::Message> {
         let card = image(String::from("img/") + &self.player_hand.cards[0].get_id() + ".png");
-        container(card).into()
+        container(card)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .align_y(Vertical::Bottom)
+            .center_x()
+            .padding(40)
+            .into()
+
     }
 }
 
