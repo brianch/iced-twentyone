@@ -1,4 +1,4 @@
-use iced::widget::{button, container, text, rule};
+use iced::widget::{button, container, text, rule, radio};
 use iced::{application, Color};
 
 
@@ -123,6 +123,30 @@ impl rule::StyleSheet for TwentyOneTheme {
             width: 1,
             radius: 0.0.into(),
             fill_mode: rule::FillMode::Full,
+        }
+    }
+}
+
+impl radio::StyleSheet for TwentyOneTheme {
+    type Style = ();
+
+    fn active(&self, _style: &Self::Style, _is_selected: bool) -> radio::Appearance {
+        radio::Appearance {
+            background: iced::Background::Color(self.palette().primary),
+            dot_color: self.palette().secondary,
+            border_width: 0.5,
+            border_color: Color::TRANSPARENT,
+            text_color: Some(self.palette().text_light),
+        }
+    }
+
+    fn hovered(&self, _style: &Self::Style, _is_selected: bool) -> radio::Appearance {
+        radio::Appearance {
+            background: iced::Background::Color(self.palette().tertiary),
+            dot_color: self.palette().primary,
+            border_width: 0.5,
+            border_color: Color::TRANSPARENT,
+            text_color: Some(self.palette().text_light),
         }
     }
 }

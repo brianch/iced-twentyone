@@ -1,4 +1,4 @@
-use iced::widget::{image, container, button, text, column as col, Rule, Row, row};
+use iced::widget::{image, container, button, text, column as col, Rule, Row, row, Radio, Space};
 use iced::{executor, Length};
 use iced::alignment::Vertical;
 use iced::{Application, Element, Settings, Command};
@@ -16,6 +16,7 @@ enum GameStage {
 }
 
 struct IcedTwentyOne {
+    color_theme: Option<theme::TwentyOneTheme>,
     deck: Deck,
     player_hand: Hand,
     dealer_hand: Hand,
@@ -34,6 +35,7 @@ impl Default for IcedTwentyOne {
         dealer.push(deck.deal_card().unwrap());
 
         IcedTwentyOne {
+            color_theme: Some(theme::TwentyOneTheme::default()),
             deck: deck,
             player_hand: player,
             dealer_hand: dealer,
@@ -49,6 +51,7 @@ enum Message {
     Stand,
     DealerDraw(Instant),
     Restart,
+    ChangeTheme(theme::TwentyOneTheme),
 }
 
 impl Application for IcedTwentyOne {
@@ -112,6 +115,8 @@ impl Application for IcedTwentyOne {
                 self.dealer_hand.push(self.deck.deal_card().unwrap());
                 self.dealer_hand.push(self.deck.deal_card().unwrap());
                 self.game_stage = GameStage::Init;
+            } Message::ChangeTheme(theme) => {
+                self.color_theme = Some(theme);
             }
         }
         Command::none()
@@ -190,9 +195,15 @@ impl Application for IcedTwentyOne {
 
         let menu_col = col![
             container(
-                button(text("Restart")).on_press(Message::Restart).style(theme::ButtonStyle::Menu),
+                col![
+                    button(text("Restart")).on_press(Message::Restart).style(theme::ButtonStyle::Menu),
+                    Space::with_height(Length::Fixed(30.)),
+                    text("Theme"),
+                    Radio::new("Green", theme::TwentyOneTheme::Green, self.color_theme, Message::ChangeTheme),
+                    Radio::new("Burgundy", theme::TwentyOneTheme::Burgundy, self.color_theme, Message::ChangeTheme),
+                ].spacing(10),
             ).height(Length::Fill).center_y().width(Length::Fill).center_x().style(theme::ContainerStyle::Menu)
-        ].align_items(iced::Alignment::Center).spacing(10).width(Length::Fixed(120.));
+        ].align_items(iced::Alignment::Center).spacing(10).width(Length::Fixed(200.));
 
         let row_ui = row![menu_col, table_col];
 
@@ -209,6 +220,10 @@ impl Application for IcedTwentyOne {
                 time::every(Duration::from_millis(1000)).map(Message::DealerDraw)
             } _ => Subscription::none(),
         }
+    }
+
+    fn theme(&self) -> Self::Theme {
+        self.color_theme.unwrap()
     }
 
 }
