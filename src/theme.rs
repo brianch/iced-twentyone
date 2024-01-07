@@ -12,27 +12,55 @@ impl application::StyleSheet for TwentyOneTheme {
 
     fn appearance(&self, _style: &Self::Style) -> application::Appearance {
         application::Appearance {
-            background_color: color!(0x477c47),
+            background_color: Color::TRANSPARENT,
             text_color: Color::BLACK,
         }
     }
 }
 
-impl button::StyleSheet for TwentyOneTheme {
-    type Style = ();
+#[derive(Default)]
+pub enum ButtonStyle {
+    /// No style.
+    #[default]
+    Table,
+    Menu,
+}
 
-    fn active(&self, _style: &Self::Style) -> button::Appearance {
-        button::Appearance {
-            background: Some(iced::Background::Color(color!(0xFFFFFF))),
-            text_color: Color::BLACK,
-            ..Default::default()
+impl button::StyleSheet for TwentyOneTheme {
+    type Style = ButtonStyle;
+
+    fn active(&self, style: &Self::Style) -> button::Appearance {
+        match style {
+            ButtonStyle::Table => {
+                button::Appearance {
+                    background: Some(iced::Background::Color(color!(0xFFFFFF))),
+                    text_color: Color::BLACK,
+                    ..Default::default()
+                }
+            } ButtonStyle::Menu => {
+                button::Appearance {
+                    background: Some(iced::Background::Color(color!(0x477c47))),
+                    text_color: Color::WHITE,
+                    ..Default::default()
+                }
+            }
         }
     }
-    fn hovered(&self, _style: &Self::Style) -> button::Appearance {
-        button::Appearance {
-            background: Some(iced::Background::Color(color!(0x324731))),
-            text_color: Color::WHITE,
-            ..Default::default()
+    fn hovered(&self, style: &Self::Style) -> button::Appearance {
+        match style {
+            ButtonStyle::Table => {
+                button::Appearance {
+                    background: Some(iced::Background::Color(color!(0x324731))),
+                    text_color: Color::WHITE,
+                    ..Default::default()
+                }
+            } ButtonStyle::Menu => {
+                button::Appearance {
+                    background: Some(iced::Background::Color(color!(0xFFFFFF))),
+                    text_color: Color::BLACK,
+                    ..Default::default()
+                }
+            }
         }
     }
     fn pressed(&self, _style: &Self::Style) -> button::Appearance {
@@ -40,13 +68,32 @@ impl button::StyleSheet for TwentyOneTheme {
     }
 }
 
-impl container::StyleSheet for TwentyOneTheme {
-    type Style = ();
+#[derive(Default)]
+pub enum ContainerStyle {
+    /// No style.
+    #[default]
+    Table,
+    Menu,
+}
 
-    fn appearance(&self, _style: &Self::Style) -> container::Appearance {
-        container::Appearance {
-                text_color: Some(Color::WHITE),
-                ..Default::default()
+impl container::StyleSheet for TwentyOneTheme {
+    type Style = ContainerStyle;
+
+    fn appearance(&self, style: &Self::Style) -> container::Appearance {
+        match style {
+            ContainerStyle::Table => {
+                container::Appearance {
+                    text_color: Some(Color::WHITE),
+                    background: Some(iced::Background::Color(color!(0x477c47))),
+                    ..Default::default()
+                }
+            } ContainerStyle::Menu => {
+                container::Appearance {
+                    text_color: Some(Color::WHITE),
+                    background: Some(iced::Background::Color(color!(0x192f19))),
+                    ..Default::default()
+                }
+            }
         }
     }
 }
