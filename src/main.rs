@@ -190,8 +190,8 @@ impl Application for IcedTwentyOne {
 
         let menu_col = col![
             container(
-                button(text("Restart")).on_press(Message::Restart),
-            ).height(Length::Fill).center_y().width(Length::Fill).center_x()
+                button(text("Restart")).on_press(Message::Restart).style(theme::ButtonStyle::Menu),
+            ).height(Length::Fill).center_y().width(Length::Fill).center_x().style(theme::ContainerStyle::Menu)
         ].align_items(iced::Alignment::Center).spacing(10).width(Length::Fixed(120.));
 
         let row_ui = row![menu_col, table_col];
