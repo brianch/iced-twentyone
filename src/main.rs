@@ -9,7 +9,7 @@ use card::{Deck, Hand};
 
 #[derive(PartialEq)]
 enum GameStage {
-    Init, Dealing
+    Init, Dealing, Standing
 }
 
 struct IcedTwentyOne {
@@ -42,7 +42,8 @@ impl Default for IcedTwentyOne {
 #[derive(Debug, Clone, Copy)]
 enum Message {
     Start,
-    DealCard
+    DealCard,
+    Stand,
 }
 
 impl Application for IcedTwentyOne {
@@ -67,22 +68,31 @@ impl Application for IcedTwentyOne {
                 }
             } Message::Start => {
                 self.game_stage = GameStage::Dealing;
+            } Message::Stand => {
+                self.game_stage = GameStage::Standing;
             }
         }
         Command::none()
     }
 
     fn view(&self) -> Element<Message, iced::Renderer<theme::TwentyOneTheme>> {
-
-        let dealer_row = row![
-            image(String::from("img/") + &self.dealer_hand.cards[0].get_id() + ".png").height(Length::Fixed(200.)),
-            image(String::from("img/back.png")).height(Length::Fixed(200.))
-        ].spacing(10);
+        let mut dealer_hand_val = String::from("?");
+        let mut dealer_row = Row::new().spacing(10);
+        if self.game_stage == GameStage::Init || self.game_stage == GameStage::Dealing {
+            dealer_row = dealer_row
+                .push(image(String::from("img/") + &self.dealer_hand.cards[0].get_id() + ".png").height(Length::Fixed(200.)))
+                .push(image(String::from("img/back.png")).height(Length::Fixed(200.)));
+        } else {
+            for card in &self.dealer_hand.cards {
+                dealer_row = dealer_row.push(image(String::from("img/") + &card.get_id() + ".png").height(Length::Fixed(200.)));
+            }
+            dealer_hand_val = self.dealer_hand.value().to_string();
+        };
 
         let dealer_info = container(
             col![
                 dealer_row,
-                text("?").size(35),
+                text(dealer_hand_val).size(35),
                 Rule::horizontal(4.),
             ].width(Length::Fill).align_items(iced::Alignment::Center).spacing(20)
         ).height(Length::Fill).align_y(Vertical::Top);
@@ -106,7 +116,10 @@ impl Application for IcedTwentyOne {
                 Rule::horizontal(4.),
                 text(self.player_hand.value().to_string()).size(35),
                 player_row,
-                button(text("Deal another card")).on_press(Message::DealCard),
+                row![
+                    button(text("Deal another card")).on_press(Message::DealCard),
+                    button(text("Stand")).on_press(Message::Stand),
+                ].spacing(30),
             ].width(Length::Fill).align_items(iced::Alignment::Center).spacing(20)
         };
         let player_info = container(player_info_col).height(Length::Fill).align_y(Vertical::Bottom);
