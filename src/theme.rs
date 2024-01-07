@@ -1,10 +1,19 @@
 use iced::widget::{button, container, text, rule};
-use iced::{application, Color, color};
+use iced::{application, Color};
+
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TwentyOneTheme {
     #[default]
     Green,
+}
+
+impl TwentyOneTheme {
+    pub fn palette(&self) -> TwentyOnePalette {
+        match self {
+            TwentyOneTheme::Green => TwentyOnePalette::GREEN,
+        }
+    }
 }
 
 impl application::StyleSheet for TwentyOneTheme {
@@ -33,14 +42,14 @@ impl button::StyleSheet for TwentyOneTheme {
         match style {
             ButtonStyle::Table => {
                 button::Appearance {
-                    background: Some(iced::Background::Color(color!(0xFFFFFF))),
-                    text_color: Color::BLACK,
+                    background: Some(iced::Background::Color(self.palette().tertiary)),
+                    text_color: self.palette().text_dark,
                     ..Default::default()
                 }
             } ButtonStyle::Menu => {
                 button::Appearance {
-                    background: Some(iced::Background::Color(color!(0x477c47))),
-                    text_color: Color::WHITE,
+                    background: Some(iced::Background::Color(self.palette().primary)),
+                    text_color: self.palette().text_light,
                     ..Default::default()
                 }
             }
@@ -50,21 +59,18 @@ impl button::StyleSheet for TwentyOneTheme {
         match style {
             ButtonStyle::Table => {
                 button::Appearance {
-                    background: Some(iced::Background::Color(color!(0x324731))),
+                    background: Some(iced::Background::Color(self.palette().secondary)),
                     text_color: Color::WHITE,
                     ..Default::default()
                 }
             } ButtonStyle::Menu => {
                 button::Appearance {
-                    background: Some(iced::Background::Color(color!(0xFFFFFF))),
+                    background: Some(iced::Background::Color(self.palette().tertiary)),
                     text_color: Color::BLACK,
                     ..Default::default()
                 }
             }
         }
-    }
-    fn pressed(&self, _style: &Self::Style) -> button::Appearance {
-        self.hovered(_style)
     }
 }
 
@@ -83,14 +89,14 @@ impl container::StyleSheet for TwentyOneTheme {
         match style {
             ContainerStyle::Table => {
                 container::Appearance {
-                    text_color: Some(Color::WHITE),
-                    background: Some(iced::Background::Color(color!(0x477c47))),
+                    text_color: Some(self.palette().text_light),
+                    background: Some(iced::Background::Color(self.palette().primary)),
                     ..Default::default()
                 }
             } ContainerStyle::Menu => {
                 container::Appearance {
-                    text_color: Some(Color::WHITE),
-                    background: Some(iced::Background::Color(color!(0x192f19))),
+                    text_color: Some(self.palette().text_light),
+                    background: Some(iced::Background::Color(self.palette().secondary)),
                     ..Default::default()
                 }
             }
@@ -118,3 +124,31 @@ impl rule::StyleSheet for TwentyOneTheme {
         }
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct TwentyOnePalette {
+    pub primary: Color,
+    pub secondary: Color,
+    pub tertiary: Color,
+    pub text_light: Color,
+    pub text_dark: Color,
+}
+
+impl TwentyOnePalette {
+    pub const GREEN: Self = Self {
+        primary: Color::from_rgb(
+            0x47 as f32 / 255.0,
+            0x7c as f32 / 255.0,
+            0x47 as f32 / 255.0,
+        ),
+        secondary: Color::from_rgb(
+            0x32 as f32 / 255.0,
+            0x47 as f32 / 255.0,
+            0x31 as f32 / 255.0,
+        ),
+        tertiary: Color::WHITE,
+        text_dark: Color::BLACK,
+        text_light: Color::WHITE,
+    };
+}
+
