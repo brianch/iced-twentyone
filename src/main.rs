@@ -1,8 +1,7 @@
 use iced::widget::{image, container, button, text, column as col, Rule, Row};
 use iced::{executor, Length};
-use iced::theme::Button;
 use iced::alignment::Vertical;
-use iced::{Application, Element, Settings, Theme, Command, Color, color};
+use iced::{Application, Element, Settings, Command};
 
 mod theme;
 mod card;
@@ -38,7 +37,7 @@ impl Application for IcedTwentyOne {
     type Theme = theme::TwentyOneTheme;
 
     fn new(_flags: ()) -> (IcedTwentyOne, Command<Self::Message>) {
-        (IcedTwentyOne::default(), Command::none())
+        (IcedTwentyOne::default(), iced::window::maximize(true))
     }
 
     fn title(&self) -> String {
