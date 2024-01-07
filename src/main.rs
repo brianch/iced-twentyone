@@ -1,10 +1,36 @@
 use iced::widget::{image, container, button, text, column as col, Rule, Row};
 use iced::{executor, Length};
+use iced::theme::Button;
 use iced::alignment::Vertical;
-use iced::{Application, Element, Settings, Theme, Command};
+use iced::{Application, Element, Settings, Theme, Command, Color, color};
 
 mod card;
 use card::{Deck, Hand};
+
+#[derive(Default)]
+struct TwentyOneButtonStyle;
+
+impl iced::widget::button::StyleSheet for TwentyOneButtonStyle {
+    type Style = iced::Theme;
+
+    fn active(&self, _style: &Self::Style) -> button::Appearance {
+        button::Appearance {
+            background: Some(iced::Background::Color(color!(0xBBFF44))),
+            text_color: Color::BLACK,
+            ..Default::default()
+        }
+    }
+    fn hovered(&self, _style: &Self::Style) -> button::Appearance {
+        button::Appearance {
+            background: Some(iced::Background::Color(color!(0x559911))),
+            text_color: Color::WHITE,
+            ..Default::default()
+        }
+    }
+    fn pressed(&self, _style: &Self::Style) -> button::Appearance {
+        self.hovered(_style)
+    }
+}
 
 struct IcedTwentyOne {
     deck: Deck,
@@ -64,7 +90,7 @@ impl Application for IcedTwentyOne {
             player_row,
             Rule::horizontal(4.),
             text(self.player_hand.value().to_string()).size(35),
-            button(text("Deal another card")).on_press(Message::DealCard)
+            button(text("Deal another card")).on_press(Message::DealCard).style(Button::Custom( Box::new(TwentyOneButtonStyle)))
         ].align_items(iced::Alignment::Center).spacing(10);
 
         container(table_col)
