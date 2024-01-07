@@ -79,6 +79,13 @@ impl Application for IcedTwentyOne {
                 self.game_stage = GameStage::Dealing;
             } Message::Stand => {
                 self.game_stage = GameStage::Standing;
+                if self.dealer_hand.value() == self.player_hand.value() {
+                    self.game_stage = GameStage::Tie;
+                } else if self.dealer_hand.value() > self.player_hand.value()  {
+                    self.game_stage = GameStage::HouseWon;
+                } else {
+                    self.game_stage = GameStage::PlayerWon;
+                }
             }
         }
         Command::none()
