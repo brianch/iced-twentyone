@@ -1,0 +1,7 @@
+The card images are from here (Just renamed):
+https://code.google.com/archive/p/vector-playing-cards/
+(public domain)
+
+Except the "back.png", which is from here:
+https://pixabay.com/photos/playing-card-back-template-568201/
+("pixabay" license)

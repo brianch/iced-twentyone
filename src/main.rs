@@ -1,4 +1,4 @@
-use iced::widget::{container, text};
+use iced::widget::{container, image};
 use iced::executor;
 use iced::{Application, Element, Settings, Theme, Command};
 
@@ -46,7 +46,7 @@ impl Application for IcedTwentyOne {
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let card = text(self.player_hand.cards[0]);
+        let card = image(String::from("img/") + &self.player_hand.cards[0].get_id() + ".png");
         container(card).into()
     }
 }
