@@ -1,4 +1,4 @@
-use iced::widget::{image, container, button, text, column as col};
+use iced::widget::{image, container, button, text, column as col, Rule, Row};
 use iced::{executor, Length};
 use iced::alignment::Vertical;
 use iced::{Application, Element, Settings, Theme, Command};
@@ -47,7 +47,6 @@ impl Application for IcedTwentyOne {
         match message {
             Message::DealCard => {
                 if let Some(new_card) = self.deck.deal_card() {
-                    self.player_hand.pop();
                     self.player_hand.push(new_card);
                 }
             }
@@ -56,11 +55,16 @@ impl Application for IcedTwentyOne {
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let img_path = String::from("img/") + &self.player_hand.cards[0].get_id() + ".png";
+        let mut player_row = Row::new();
+        for card in &self.player_hand.cards {
+            player_row = player_row.push(image(String::from("img/") + &card.get_id() + ".png").height(Length::Fixed(250.)));
+        }
 
         let table_col = col![
-            image(img_path).height(Length::Fixed(500.)),
-            button(text("Deal another card")).on_press(Message::DealCard),
+            player_row,
+            Rule::horizontal(4.),
+            text(self.player_hand.value().to_string()).size(35),
+            button(text("Deal another card")).on_press(Message::DealCard)
         ].align_items(iced::Alignment::Center).spacing(10);
 
         container(table_col)
