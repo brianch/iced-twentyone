@@ -2,8 +2,26 @@ use iced::widget::{container, text};
 use iced::executor;
 use iced::{Application, Element, Settings, Theme, Command};
 
-#[derive(Default)]
-struct IcedTwentyOne;
+mod card;
+use card::{Deck, Hand};
+
+struct IcedTwentyOne {
+    deck: Deck,
+    player_hand: Hand,
+}
+
+impl Default for IcedTwentyOne {
+    fn default() -> IcedTwentyOne {
+        let mut deck = Deck::new();
+        let mut hand = Hand::new();
+        deck.shuffle();
+        hand.push(deck.deal_card().unwrap());
+        IcedTwentyOne {
+            deck: deck,
+            player_hand: hand,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
@@ -28,8 +46,8 @@ impl Application for IcedTwentyOne {
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let hello = text("Hello, Iced! (with application trait)");
-        container(hello).into()
+        let card = text(self.player_hand.cards[0]);
+        container(card).into()
     }
 }
 
