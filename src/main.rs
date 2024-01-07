@@ -2,6 +2,9 @@ use iced::widget::{image, container, button, text, column as col, Rule, Row, row
 use iced::{executor, Length};
 use iced::alignment::Vertical;
 use iced::{Application, Element, Settings, Command};
+use iced::Subscription;
+use std::time::{Duration, Instant};
+use iced::time;
 
 mod theme;
 mod card;
@@ -44,6 +47,7 @@ enum Message {
     Start,
     DealCard,
     Stand,
+    DealerDraw(Instant),
 }
 
 impl Application for IcedTwentyOne {
@@ -81,10 +85,21 @@ impl Application for IcedTwentyOne {
                 self.game_stage = GameStage::Standing;
                 if self.dealer_hand.value() == self.player_hand.value() {
                     self.game_stage = GameStage::Tie;
-                } else if self.dealer_hand.value() > self.player_hand.value()  {
+                } if self.dealer_hand.value() > self.player_hand.value()  {
                     self.game_stage = GameStage::HouseWon;
+                } else if self.dealer_hand.value() < 17 {
+                    self.game_stage = GameStage::Standing;
                 } else {
                     self.game_stage = GameStage::PlayerWon;
+                }
+            } Message::DealerDraw(_) => {
+                self.dealer_hand.push(self.deck.deal_card().unwrap());
+                if self.dealer_hand.value() > 21 {
+                    self.game_stage = GameStage::PlayerWon;
+                } else if self.dealer_hand.value() > self.player_hand.value()  {
+                    self.game_stage = GameStage::HouseWon;
+                } else if self.dealer_hand.value() == self.player_hand.value()  {
+                    self.game_stage = GameStage::Tie;
                 }
             }
         }
@@ -168,6 +183,14 @@ impl Application for IcedTwentyOne {
             .center_y()
             .padding(40)
             .into()
+    }
+
+    fn subscription(&self) -> Subscription<Message> {
+        match self.game_stage {
+            GameStage::Standing => {
+                time::every(Duration::from_millis(1000)).map(Message::DealerDraw)
+            } _ => Subscription::none(),
+        }
     }
 
 }
