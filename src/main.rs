@@ -1,4 +1,4 @@
-use iced::widget::{container, image};
+use iced::widget::{image, container, button, text, column as col};
 use iced::{executor, Length};
 use iced::alignment::Vertical;
 use iced::{Application, Element, Settings, Theme, Command};
@@ -26,6 +26,7 @@ impl Default for IcedTwentyOne {
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
+    DealCard
 }
 
 impl Application for IcedTwentyOne {
@@ -42,20 +43,33 @@ impl Application for IcedTwentyOne {
         String::from("Iced Twenty-One")
     }
 
-    fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
+    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+        match message {
+            Message::DealCard => {
+                if let Some(new_card) = self.deck.deal_card() {
+                    self.player_hand.pop();
+                    self.player_hand.push(new_card);
+                }
+            }
+        }
         Command::none()
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let card = image(String::from("img/") + &self.player_hand.cards[0].get_id() + ".png");
-        container(card)
+        let img_path = String::from("img/") + &self.player_hand.cards[0].get_id() + ".png";
+
+        let table_col = col![
+            image(img_path).height(Length::Fixed(500.)),
+            button(text("Deal another card")).on_press(Message::DealCard),
+        ].align_items(iced::Alignment::Center).spacing(10);
+
+        container(table_col)
             .width(Length::Fill)
             .height(Length::Fill)
             .align_y(Vertical::Bottom)
             .center_x()
             .padding(40)
             .into()
-
     }
 }
 
